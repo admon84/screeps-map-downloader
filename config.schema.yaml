@@ -1,0 +1,28 @@
+type: object
+required:
+  - api_host
+  - api_prefix
+  - map_shard
+properties:
+  api_host:
+    type: string
+  api_prefix:
+    type: string
+  api_token:
+    type: string
+  api_username:
+    type: string
+  api_password:
+    type: string
+  api_secure:
+    type: boolean
+  map_shard:
+    type: string
+  map_description:
+    type: string
+  results_save_file:
+    type: boolean
+  results_filename:
+    type: string
+  verbose_logging:
+    type: boolean

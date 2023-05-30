@@ -1,0 +1,13 @@
+---
+api_host: screeps.com
+api_prefix: /season
+api_token: ${SCREEPS_AUTH_TOKEN}
+api_username: ''
+api_password: ''
+api_secure: true
+
+map_shard: shardSeason
+map_description: Screeps Season Map
+results_save_file: true
+results_filename: season_map_rawdata.json
+verbose_logging: true
