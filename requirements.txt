@@ -1,0 +1,5 @@
+pyyaml
+jsonschema
+rich
+envyaml
+git+https://github.com/admon84/python-screeps.git@v0.5.2#egg=screepsapi

@@ -1,38 +1,32 @@
-# screeps-map-downloader
+# Screeps Map Downloader
 
-A script that compiles a Screeps World map into a json file by fetching the map data for each room using the unofficial Screeps API
+Python script for downloading a Screeps World map into a JSON file, utilizing the unofficial Screeps API.
 
 ### Requirements
 
-Python 3
+* Python 3
 
 ### Install
 
-Download or clone this repo and then install python packages in a virtual env:
+Download or clone this repo and then install Python dependencies from the project root:
 
 ```sh
-python3 -m venv env
-source env/bin/activate
-pip install --upgrade pip
-pip install pyyaml jsonschema rich envyaml
-pip install git+https://github.com/admon84/python-screeps.git@v0.5.2#egg=screepsapi
-deactivate
+make setup
 ```
 
-### Running the script
+### Running the Script
 
-Configure `config.yaml` with the correct host, auth token, and other settings.
-
-After configuration, run the script:
+1. Configure `config.yaml` with the server host and map settings.
+2. Run the script:
 
 ```sh
-source env/bin/activate
-python3 map_downloader.py
-deactivate
+make run
 ```
 
-### Importing a map to a private server
+![screeps-map-downloader](https://github.com/admon84/screeps-map-downloader/assets/10291543/8f6163c3-2498-4cff-a8de-240a4a53fb29)
 
-To import a map with screepsmod-map-tool, drag and drop a map json file into the map tool window, save, done!
+### Importing a Map to a Private Server
 
-For other contenient options, see [screepsmod-admin-utils](https://github.com/ScreepsMods/screepsmod-admin-utils#readme)
+To import a map with screepsmod-map-tool, drag and drop a map JSON file into the map tool window, save, and you're done!
+
+For other convenient options, see [screepsmod-admin-utils](https://github.com/ScreepsMods/screepsmod-admin-utils#readme).
