@@ -9,20 +9,18 @@ properties:
   api_prefix:
     type: string
   api_token:
-    type: string
+    type: ["string", "null"]
   api_username:
-    type: string
+    type: ["string", "null"]
   api_password:
-    type: string
+    type: ["string", "null"]
   api_secure:
-    type: boolean
+    type: ["boolean", "null"]
   map_shard:
     type: string
   map_description:
-    type: string
-  results_save_file:
-    type: boolean
-  results_filename:
-    type: string
-  verbose_logging:
+    type: ["string", "null"]
+  save_results_filename:
+    type: ["string", "null"]
+  progress_bar:
     type: boolean
