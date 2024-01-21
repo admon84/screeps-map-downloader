@@ -1,51 +1,60 @@
-'use strict';
+"use strict";
 
-const fs = require('fs');
+const fs = require("fs");
 
-fs.readFile('season_map_rawdata.json', (err, data) => {
-    if (err) throw err;
-    let map = JSON.parse(data);
-    for (const r in map.rooms) {
-        map.rooms[r].objects = map.rooms[r].objects.filter((o) => {
-            if (o.type === 'ruin') {
-                return false;
-            }
-            if (o.type === 'reactor') {
-                return false;
-            }
-            if (o.type === 'spawn') {
-                return false;
-            }
-            if (o.type === 'constructionSite') {
-                return false;
-            }
-            if (o.type === 'mineral' && o.mineralType === 'T') {
-                return false;
-            }
-            return true;
-        });
+const regexRoom = new RegExp("^([WE]{1})([0-9]{1,2})([NS]{1})([0-9]{1,2})$");
 
-        for (const o in map.rooms[r].objects) {
-            if (map.rooms[r].objects[o].type === 'controller') {
-                map.rooms[r].objects[o].level = 0;
-                map.rooms[r].objects[o].safeMode = undefined;
-                map.rooms[r].objects[o].safeModeAvailable = undefined;
-                map.rooms[r].objects[o].safeModeCooldown = undefined;
-                map.rooms[r].objects[o].user = undefined;
-                map.rooms[r].objects[o].isPowerEnabled = undefined;
-                map.rooms[r].objects[o].downgradeTime = undefined;
-                map.rooms[r].objects[o].progress = undefined;
-                map.rooms[r].objects[o].progressTotal = undefined;
-                map.rooms[r].objects[o].hits = undefined;
-                map.rooms[r].objects[o].hitsMax = undefined;
-            }
-        }
+function isHighwayRoom(roomName) {
+  const parsed = regexRoom.exec(roomName);
+  if (parsed) {
+    return parsed[2] % 10 === 0 || parsed[4] % 10 === 0;
+  }
+  return false;
+}
+
+fs.readFile("season_map_rawdata.json", (err, data) => {
+  if (err) throw err;
+  let map = JSON.parse(data);
+  for (const roomData of map.rooms) {
+    if (!isHighwayRoom(roomData.room)) {
+      delete roomData.bus;
+      delete roomData.depositType;
     }
 
-    fs.writeFile('season_map_clean.json', JSON.stringify(map), 'utf8', (err) => {
-        if (err) {
-            throw err;
-        }
-        console.log('Finished');
+    roomData.objects = roomData.objects.filter((o) => {
+      if (o.type === "ruin") {
+        return false;
+      }
+      if (o.type === "spawn") {
+        return false;
+      }
+      if (o.type === "constructionSite") {
+        return false;
+      }
+      return true;
     });
+
+    for (const objectsData in roomData.objects) {
+      if (objectsData.type === "controller") {
+        objectsData.level = 0;
+        delete objectsData.safeMode;
+        delete objectsData.safeModeAvailable;
+        delete objectsData.safeModeCooldown;
+        delete objectsData.user;
+        delete objectsData.isPowerEnabled;
+        delete objectsData.downgradeTime;
+        delete objectsData.progress;
+        delete objectsData.progressTotal;
+        delete objectsData.hits;
+        delete objectsData.hitsMax;
+      }
+    }
+  }
+
+  fs.writeFile("season_map_clean.json", JSON.stringify(map), "utf8", (err) => {
+    if (err) {
+      throw err;
+    }
+    console.log("Complete");
+  });
 });
