@@ -1,4 +1,5 @@
 import re
+import ast
 import sys
 import time
 import yaml
@@ -184,15 +185,24 @@ class ScreepsMapDownloader(object):
             "rooms": [],
         }
 
-        # Fetch world size from API
+        # Disabled - Fetch world size from API
+        # worldsize_res = self.api.worldsize(shard=shard)
+        # map_max_x = worldsize_res["width"] // 2
+        # map_max_y = worldsize_res["height"] // 2
+        # room_directions = [("W", "N"), ("W", "S"), ("E", "N"), ("E", "S")]
+
+        # Use map settings from config
         shard = self.config["map_shard"]
-        worldsize_res = self.api.worldsize(shard=shard)
-        world_max_dy = worldsize_res["width"] // 2
-        world_max_dx = worldsize_res["height"] // 2
+        map_min_x, map_max_x = self.config["map_size_x"]
+        map_min_y, map_max_y = self.config["map_size_y"]
+        map_max_x += 1
+        map_max_y += 1
 
         # Calculate total rooms
-        room_directions = [("W", "N"), ("W", "S"), ("E", "N"), ("E", "S")]
-        total_rooms = world_max_dy * world_max_dx * len(room_directions)
+        room_directions = [
+            (dx, dy) for dx in self.config["map_dx"] for dy in self.config["map_dy"]
+        ]
+        total_rooms = map_max_y * map_max_x * len(room_directions)
         fmt_total_rooms = "{:,}".format(total_rooms)
 
         # Start fetching rooms
@@ -204,8 +214,8 @@ class ScreepsMapDownloader(object):
         for dx, dy in room_directions:
             deposit_type = self.get_deposit_type(dx, dy)
             room_status = self.get_room_status(dx, dy)
-            for y in range(world_max_dy):
-                for x in range(world_max_dx):
+            for y in range(map_min_y, map_max_y):
+                for x in range(map_min_x, map_max_x):
                     room_index += 1
                     room = f"{dx}{x}{dy}{y}"
                     t = Thread(

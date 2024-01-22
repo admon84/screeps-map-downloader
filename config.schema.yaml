@@ -3,6 +3,10 @@ required:
   - api_host
   - api_prefix
   - map_shard
+  - map_dx
+  - map_dy
+  - map_size_x
+  - map_size_y
 properties:
   api_host:
     type: string
@@ -20,6 +24,14 @@ properties:
     type: string
   map_description:
     type: ["string", "null"]
+  map_dx:
+    type: array
+  map_dy:
+    type: array
+  map_size_x:
+    type: array
+  map_size_y:
+    type: array
   save_results_filename:
     type: ["string", "null"]
   progress_bar:

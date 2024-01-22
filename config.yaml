@@ -10,6 +10,12 @@ api_secure: true
 map_shard: shardSeason
 map_description: Screeps Season Map
 
+# Map size
+map_dx: ["W", "E"]
+map_dy: ["N", "S"]
+map_size_x: [0, 50]
+map_size_y: [0, 50]
+
 # Save results to file
 save_results_filename: screeps_season_map.json
 
