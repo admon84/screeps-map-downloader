@@ -55,7 +55,11 @@ class ScreepsMapDownloader(object):
         time.sleep(0.3)
         room_status_res = self.api.room_status(room=room, shard=shard)
 
-        if self.config["progress_bar"]:
+        if room_status_res.get("error"):
+            self.log(f"Error: {room_status_res['error']}")
+            return None
+
+        if self.config.get("progress_bar"):
             # Estimate time remaining
             percent_complete = room_index / total_rooms * 100
             percent_complete = round(percent_complete, 1)
@@ -86,7 +90,7 @@ class ScreepsMapDownloader(object):
                 f"\[{bar}] {fmt_percent} | {fmt_room_count} | {shard}/{room} | {est_time}"
             )
 
-        if room_status_res["ok"] == 1:
+        if room_status_res.get("ok") == 1:
             # Remove ruins, spawns and construction sites
             room_objects = [
                 o
@@ -133,6 +137,9 @@ class ScreepsMapDownloader(object):
         return None
 
     def estimate_time_remaining(self, percent_complete):
+        if percent_complete == 0:
+            return "..."  # Avoid division by zero
+
         time_elapsed = time.time() - self.start_time
         time_per_unit = time_elapsed / percent_complete
         est_time_remaining = time_per_unit * (100 - percent_complete)
@@ -163,17 +170,9 @@ class ScreepsMapDownloader(object):
         }
         return deposit_types.get((dx, dy))
 
-    def get_room_status(self, dx, dy):
-        room_status = {
-            ("W", "N"): "normal",
-            ("W", "S"): "normal",
-            ("E", "N"): "not available",
-            ("E", "S"): "not available",
-        }
-        return room_status.get((dx, dy))
-
     def run(self):
-        self.log(f"Downloading: {self.config['map_description']}")
+        map_name = self.config.get("map_description")
+        self.log(f"Downloading: {map_name}")
 
         # Create queue and thread list
         queue = Queue()
@@ -181,7 +180,7 @@ class ScreepsMapDownloader(object):
 
         # Create data object
         data = {
-            "description": self.config["map_description"],
+            "description": map_name,
             "rooms": [],
         }
 
@@ -192,15 +191,17 @@ class ScreepsMapDownloader(object):
         # room_directions = [("W", "N"), ("W", "S"), ("E", "N"), ("E", "S")]
 
         # Use map settings from config
-        shard = self.config["map_shard"]
-        map_min_x, map_max_x = self.config["map_size_x"]
-        map_min_y, map_max_y = self.config["map_size_y"]
+        shard = self.config.get("map_shard")
+        map_min_x, map_max_x = self.config.get("map_size_x")
+        map_min_y, map_max_y = self.config.get("map_size_y")
         map_max_x += 1
         map_max_y += 1
 
         # Calculate total rooms
         room_directions = [
-            (dx, dy) for dx in self.config["map_dx"] for dy in self.config["map_dy"]
+            (dx, dy)
+            for dx in self.config.get("map_dx")
+            for dy in self.config.get("map_dy")
         ]
         total_rooms = map_max_y * map_max_x * len(room_directions)
         fmt_total_rooms = "{:,}".format(total_rooms)
@@ -211,9 +212,9 @@ class ScreepsMapDownloader(object):
 
         # Iterate over all rooms
         room_index = 0
+        room_status = "normal"
         for dx, dy in room_directions:
             deposit_type = self.get_deposit_type(dx, dy)
-            room_status = self.get_room_status(dx, dy)
             for y in range(map_min_y, map_max_y):
                 for x in range(map_min_x, map_max_x):
                     room_index += 1
@@ -246,10 +247,11 @@ class ScreepsMapDownloader(object):
             data["rooms"].append(room_data)
 
         # Save results to file
-        if self.config["save_results_filename"] is not None:
-            with open(self.config["save_results_filename"], "w") as file:
+        save_results_filename = self.config.get("save_results_filename")
+        if save_results_filename:
+            with open(save_results_filename, "w") as file:
                 json.dump(data, file, separators=(",", ":"))
-            self.log(f"Results saved to {self.config['save_results_filename']}")
+            self.log(f"Results saved to {save_results_filename}")
         self.log("Complete")
 
 

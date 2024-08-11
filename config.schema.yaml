@@ -11,7 +11,7 @@ properties:
   api_host:
     type: string
   api_prefix:
-    type: string
+    type: ["string", "null"]
   api_token:
     type: ["string", "null"]
   api_username:
