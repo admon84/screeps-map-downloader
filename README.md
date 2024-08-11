@@ -27,6 +27,9 @@ make run
 
 ### Importing a Map to a Private Server
 
-To import a map with screepsmod-map-tool, drag and drop a map JSON file into the map tool window, save, and you're done!
+Importing maps to your private Screeps server can be done using Screeps mods.
 
-For other convenient options, see [screepsmod-admin-utils](https://github.com/ScreepsMods/screepsmod-admin-utils#readme).
+- Using **screepsmod-map-tool** &mdash; Drag and drop a map file into the map tool window and then save.
+- Using **screepsmod-admin-utils** &mdash; Copy a map file to the screeps server/launcher directory and run `utils.importMapFile('map_file.json')` command in the server CLI.
+
+For more details, see [screepsmod-admin-utils](https://github.com/ScreepsMods/screepsmod-admin-utils#readme).
